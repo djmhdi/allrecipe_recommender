@@ -15,7 +15,7 @@ class RecipeRecommender():
         self.logger = logging.getLogger('reco-cs')
 
 
-    def fit(self, ratings, rank):
+    def fit(self, ratings, rank, regParam):
         """
         Trains the recommender on a given set of ratings.
 
@@ -52,8 +52,8 @@ class RecipeRecommender():
             userCol='user_id',
             ratingCol='rating',
             nonnegative=True,
-            regParam=0.1,
-            # coldStartStrategy="drop"
+            regParam=regParam,
+            coldStartStrategy="drop"
             )
 
         # Train the ALS model. We'll call the trained model `recommender`.

@@ -1,0 +1,27 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+
+  <title>DSI Text Classifier</title>
+
+  <meta name="description" content="Vegetarian Recipe Recommender">
+  <meta name="pineda" content="Pineda Recommender">
+
+</head>
+
+<body>
+
+  <h2>Enter main ingredient, dish type, style, etc.</h2>
+  <p>Paste your vegetarian preferences (e.g. lentil, soup, curry) and press <span>Enter</span> for Recipe recommendations.</p>
+
+  <form action="/recommend" method='POST' >
+      <textarea name="article_body",
+                rows="1", cols="60"></textarea>
+      <button type="submit">Enter</button>
+  </form>
+
+</body>
+</html>
