@@ -2,7 +2,7 @@ from recipe_recommender import RecipeRecommender
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-
+""" Moved to optimization.py """
 
 def main(filename):
     df = pd.read_csv(filename)
@@ -20,13 +20,6 @@ def data_prep(df):
     test_df.columns = cols
     test_df_input = test_df[['user_id', 'recipe_id']]
     optimization(train_df, test_df)
-
-def optimization(train_df, test_df):
-    params = {'rank': [1, 2, 4, 6, 8, 10],
-              'regParam':[0.01, 0.1, 0.2, 0.5, 0.8]
-             }
-
-
 
 
 
