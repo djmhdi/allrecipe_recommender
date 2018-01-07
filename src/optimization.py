@@ -20,8 +20,9 @@ def data_prep(df):
     cols = 'user_id recipe_id rating'.split()
     train_df.columns = cols
     test_df.columns = cols
-    test_df_input = test_df[['user_id', 'recipe_id']]
-    optimization(train_df, test_df)
+    test_df_preds = test_df[['user_id', 'recipe_id']]
+    opt_list = optimization(train_df, test_df_preds, test_df)
+
 
 
 def optimization(train_df, test_df_preds, test_df):

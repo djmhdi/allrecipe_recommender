@@ -18,7 +18,7 @@ def submit():
 @app.route('/recommend', methods=['POST'])
 def recommend():
     """
-    Return a number of recipes (5?), title, weblink
+    Return a number of recipes (top 5?), title, weblink
     """
     data = str(request.form['article_body'])
     pred = str(model.predict([data])[0])
