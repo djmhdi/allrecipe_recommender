@@ -24,19 +24,24 @@ the food52 web site.  Had to set up ec2 instance to do this.
 Don't know what to do with it yet.
 """
 
+
 def main():
     """
     Scraper for recipe links from main page of allrecipes.com.
     Search items are 'pork', 'chicken', 'beef', 'vegetarian'.
     100 pages of recipes = 5000
     """
-    search_links = (
-     {'pork': 'http://allrecipes.com/search/results/?wt=pork&sort=re&page=',
-      'chicken':'http://allrecipes.com/search/results/?wt=chicken&sort=re&page=',
-      'beef': 'http://allrecipes.com/search/results/?wt=beef&sort=re&page=',
-      'vegetarian': 'http://allrecipes.com/search/results/?wt=vegetarian&sort=re&page='
-     }
-    )
+    search_links = ({
+       'pork':
+       'http://allrecipes.com/search/results/?wt=pork&sort=re&page=',
+       'chicken':
+       'http://allrecipes.com/search/results/?wt=chicken&sort=re&page=',
+       'beef':
+       'http://allrecipes.com/search/results/?wt=beef&sort=re&page=',
+       'vegetarian':
+       'http://allrecipes.com/search/results/?wt=vegetarian&sort=re&page='
+      }
+     )
     for key, link in search_links.items():
         link_list = []
         for page_num in range(1, 201):
@@ -54,7 +59,7 @@ def main():
         with open(filename_out, 'wb') as f:
             pickle.dump(link_list, f, pickle.HIGHEST_PROTOCOL)
     """ Sends pickled list to next scraper """
-        # recipe_details(filename_out)
+    # recipe_details(filename_out)
 
 
 def recipe_links(weblink):
@@ -80,7 +85,7 @@ def recipe_details(filename):
         link_list = pickle.load(f)
     pages = 0
     for link in link_list[:2]:
-        num = np.random.randint(2) # built in pause
+        num = np.random.randint(2)  # built in pause
         time.sleep(num)
         options = webdriver.ChromeOptions()
         options.add_argument('window-size=800x841')
@@ -88,23 +93,22 @@ def recipe_details(filename):
         driver = webdriver.Chrome(chrome_options=options)
         driver.get('http:allrecipes.com/recipe' + link)
         try:
-            reviewclick = driver.find_element_by_class_name('read--reviews ng-click-active').click()
-            selector = driver.find_element_by_css_selector(
-            '#ngdialog4-aria-describedby > div > div.review-modal-header > div.tabs > div.selected'
-            ).click()
+            reviewclick = (
+             driver.find_element_by_class_name(
+              'read--reviews ng-click-active').click()
+            )
+            selector = (
+             driver.find_element_by_css_selector(
+              '#ngdialog4-aria-describedby > div > \
+               div.review-modal-header > div.tabs > div.selected').click()
+            )
             time.sleep(1)
             rater = driver.find_element_by_class_name('ng-binding')
             rating = driver.find_element_by_class_name('rating')
             review = driver.find_element_by_class_name('ReviewText ng-binding')
             print (rater.text, rating.text, review.text)
-        # except (NoSuchElementException, TimeoutException):
+        except (NoSuchElementException, TimeoutException):
             pass
-
-        # except (NoSuchElementException, TimeoutException):
-        #     pass
-        # mongo_dump(
-            #  title.text, rating.text, recipe.text, 'https://food52.com' + link
-            # )
         pages += 1
         """
         Counter to keep track of progress - in case it fails at some
@@ -114,7 +118,7 @@ def recipe_details(filename):
         print(pages)
         driver.quit()
         if pages / 50 == pages // 50:
-            time.sleep(30) # pauses for 30 seconds after 50 scrapes
+            time.sleep(30)  # pauses for 30 seconds after 50 scrapes
         else:
             continue
 

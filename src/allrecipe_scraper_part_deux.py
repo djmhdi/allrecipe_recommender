@@ -9,7 +9,9 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, InvalidSelectorException, ElementNotVisibleException, WebDriverException
+from selenium.common.exceptions import TimeoutException, \
+    NoSuchElementException, InvalidSelectorException,\
+    ElementNotVisibleException, WebDriverException
 import numpy as np
 import string
 from collections import defaultdict
@@ -28,10 +30,6 @@ collections = db['veggie_ratings']
 def main(filename, used_links):
     """
     Open pickled list file for recipes and passes each link to the scraper
-    This algorithm passes on the used_links
-    (i.e. recipe sites that have been scraped).  Noticed that the sites that
-    make the scraper hang are not single recipe sites but have multiple suggested
-    recipe groups.  Can write a better function to take care of those.
     """
     with open(filename, 'rb') as f:
         link_list1 = pickle.load(f)
@@ -62,9 +60,9 @@ def scraper(weblink):
     driver.implicitly_wait(10)
     """
     Revealing more reviews - will click 10 times unless the number of reviews
-    is less than 120 then it stops and continues.  Exceptions will kick out of the loop
-    and continue scraper - these are all the exceptions that were thrown upon testing
-    the code.
+    is less than 120 then it stops and continues.  Exceptions will kick
+    out of the loop and continue scraper - these are all the exceptions
+    that were thrown upon testing the code.
     """
     # assert 'allrecipes' in driver.title, 'Not opening webpage'
     tester = False
@@ -73,14 +71,17 @@ def scraper(weblink):
              '#reviews > div.recipe-reviews__more-container > div.more-button'
             )
         tester = True
-    except (NoSuchElementException, TimeoutException, ElementNotVisibleException, WebDriverException):
+    except (NoSuchElementException, TimeoutException,
+            ElementNotVisibleException,
+            WebDriverException):
         print('No More button')
 
     if tester:
         for n in range(10):
             try:
                 clicker = driver.find_element_by_css_selector(
-                     '#reviews > div.recipe-reviews__more-container > div.more-button'
+                     '#reviews > div.recipe-reviews__more-container \
+                      > div.more-button'
                     )
                 clicker.location_once_scrolled_into_view
                 clicker.click()
@@ -96,33 +97,32 @@ def scraper(weblink):
         soup_scraper(weblink, html)
         driver.quit()
 
+
 def soup_scraper(weblink, html):
     soup = BeautifulSoup(html, 'html.parser')
     review_totals = 0
     try:
         recipe_name = "".join(
              [name.text for name in soup.find_all('h1',
-             attrs={'class':'recipe-summary__h1', 'itemprop':'name'})]
+              attrs={'class': 'recipe-summary__h1', 'itemprop': 'name'})]
             )
         total_reviews = soup.find('span', attrs={'class': 'review-count'}).text
         review_totals = int(total_reviews.split()[0])
     except AttributeError:
         print('Cannot find title/total reviews')
-
-
     if review_totals != 0:
         try:
             authors = (
                  [" ".join(author.text.split()) for author in
-                 soup.find_all('h4', attrs={'itemprop': 'author'})]
+                  soup.find_all('h4', attrs={'itemprop': 'author'})]
                 )
             ratings = (
                  [content['content'] for content in
-                 soup.find_all('meta', attrs={'itemprop': 'ratingValue'})][1:]
+                  soup.find_all('meta', attrs={'itemprop': 'ratingValue'})][1:]
                 )
             review_date = (
                  [str(date['content']) for date in soup.find_all
-                 ('meta', attrs={'itemprop': 'dateCreated'})]
+                  ('meta', attrs={'itemprop': 'dateCreated'})]
                 )
             review_data = list(set(zip(authors, ratings, review_date)))
             print(recipe_name)
@@ -139,11 +139,11 @@ def soup_scraper(weblink, html):
         print(recipe_name)
         review_data = [None]
         collections.insert_one({
-        'title': recipe_name,
-        'weblink': weblink,
-        'total_reviews': 0,
-        'review_data': review_data
-        })
+            'title': recipe_name,
+            'weblink': weblink,
+            'total_reviews': 0,
+            'review_data': review_data
+           })
     return None
 
 if __name__ == '__main__':

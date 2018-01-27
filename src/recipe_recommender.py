@@ -74,7 +74,6 @@ class RecipeRecommender():
         # Convert a Pandas DF to a Spark DF
         requests_df = self.spark.createDataFrame(requests)
         self.predictions = self.recommender_.transform(requests_df)
-        self.logger.debug("finishing predict")
         return self.predictions.toPandas()
 
 
